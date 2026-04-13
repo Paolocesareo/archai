@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArchAI · Consulente di automazioni condominiali</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy-dark: #0A1628;
+    --navy: #142848;
+    --navy-light: #1e3a5f;
+    --gold: #d4a946;
+    --gold-light: #e6c068;
+    --gold-dark: #a8841f;
+    --cream: #f7f5ef;
+    --white: #ffffff;
+    --text: #1a2332;
+    --text-muted: #5a6478;
+    --success: #2d7a4f;
+    --warning: #c97f1e;
+    --danger: #b54545;
+    --border: #e3e0d6;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    line-height: 1.5;
+    min-height: 100vh;
+    padding: 24px 16px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+  }
+
+  .archai-app {
+    width: 100%;
+    max-width: 720px;
+    background: var(--white);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(10, 22, 40, 0.12);
+    border: 1px solid var(--border);
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%);
+    padding: 28px 32px;
+    color: var(--white);
+    border-bottom: 3px solid var(--gold);
+  }
+  .header-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .logo {
+    width: 52px;
+    height: 52px;
+    background: var(--gold);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .logo svg { width: 32px; height: 32px; }
+  .titles { flex: 1; min-width: 0; }
+  .title {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+  .title .ai-badge {
+    background: var(--gold);
+    color: var(--navy-dark);
+    font-size: 11px;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 5px;
+    margin-left: 6px;
+    vertical-align: middle;
+    letter-spacing: 0.5px;
+  }
+  .subtitle {
+    font-size: 13px;
+    color: var(--gold-light);
+    margin-top: 3px;
+    font-weight: 500;
+  }
+
+  /* PROGRESS */
+  .progress {
+    display: flex;
+    gap: 6px;
+    padding: 16px 32px;
+    background: var(--navy-light);
+  }
+  .progress-step {
+    flex: 1;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 2px;
+    transition: background 0.3s;
+  }
+  .progress-step.active { background: var(--gold); }
+  .progress-step.done { background: var(--gold-dark); }
+
+  /* CONTENT */
+  .content {
+    padding: 36px 32px;
+    min-height: 320px;
+  }
+  .step-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gold-dark);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .step-question {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--navy-dark);
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+  .step-hint {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+  }
+
+  /* INPUT */
+  .text-input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    font-size: 16px;
+    font-family: inherit;
+    color: var(--text);
+    background: var(--white);
+    transition: border-color 0.2s;
+  }
+  .text-input:focus {
+    outline: none;
+    border-color: var(--gold);
+  }
+
+  /* OPTIONS */
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .option {
+    background: var(--white);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 18px;
+    text-align: left;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 15px;
+    color: var(--text);
+    transition: all 0.15s;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .option:hover {
+    border-color: var(--gold);
+    background: #fffdf6;
+    transform: translateY(-1px);
+  }
+  .option-letter {
+    width: 26px;
+    height: 26px;
+    background: var(--navy);
+    color: var(--white);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+  .option:hover .option-letter {
+    background: var(--gold);
+    color: var(--navy-dark);
+  }
+  .option-text { flex: 1; padding-top: 2px; }
+
+  /* BUTTONS */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 24px;
+    background: var(--gold);
+    color: var(--navy-dark);
+    border: none;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn:hover { background: var(--gold-light); transform: translateY(-1px); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+  .btn-secondary {
+    background: transparent;
+    color: var(--navy);
+    border: 2px solid var(--navy);
+  }
+  .btn-secondary:hover { background: var(--navy); color: var(--white); }
+
+  .actions {
+    margin-top: 28px;
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+  }
+
+  /* INTRO */
+  .intro-text {
+    font-size: 15px;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+    line-height: 1.6;
+  }
+  .principio-zero {
+    background: linear-gradient(135deg, #fffdf6 0%, #fdf8e8 100%);
+    border-left: 4px solid var(--gold);
+    padding: 16px 18px;
+    border-radius: 6px;
+    margin-bottom: 24px;
+  }
+  .principio-zero strong { color: var(--gold-dark); display: block; margin-bottom: 4px; font-size: 13px; letter-spacing: 0.5px; text-transform: uppercase; }
+  .principio-zero p { font-size: 14px; color: var(--text); font-style: italic; }
+
+  /* STOP / RESULT */
+  .alert {
+    padding: 24px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+  }
+  .alert.danger {
+    background: #fdf0f0;
+    border-left: 4px solid var(--danger);
+  }
+  .alert.warning {
+    background: #fef7eb;
+    border-left: 4px solid var(--warning);
+  }
+  .alert h3 {
+    font-size: 18px;
+    margin-bottom: 8px;
+    color: var(--navy-dark);
+  }
+  .alert p { color: var(--text); font-size: 14px; }
+
+  /* SCHEDA FINALE */
+  .scheda {
+    background: var(--navy-dark);
+    color: var(--cream);
+    padding: 28px 24px;
+    border-radius: 10px;
+    font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    margin-bottom: 16px;
+    border: 2px solid var(--gold);
+    overflow-x: auto;
+  }
+  .scheda .header-line {
+    color: var(--gold);
+    text-align: center;
+    margin-bottom: 4px;
+  }
+  .scheda .title-line {
+    color: var(--gold-light);
+    text-align: center;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+  }
+  .scheda .field-line { color: var(--cream); }
+  .scheda .field-label { color: var(--gold-light); display: inline-block; min-width: 110px; }
+  .scheda .level-l1 { color: #6dd989; font-weight: 700; }
+  .scheda .level-l1p { color: #f4c95a; font-weight: 700; }
+  .scheda .level-l2 { color: #ff8a65; font-weight: 700; }
+  .scheda .next-steps-title { color: var(--gold); margin: 12px 0 6px; font-weight: 700; }
+  .scheda .step-item { color: var(--cream); padding-left: 4px; }
+  .scheda .footer-line { color: var(--text-muted); text-align: center; margin-top: 12px; font-size: 11px; }
+
+  .copy-feedback {
+    display: inline-block;
+    padding: 8px 14px;
+    background: var(--success);
+    color: var(--white);
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-left: 12px;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .copy-feedback.show { opacity: 1; }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    body { padding: 12px 8px; }
+    .header { padding: 20px; }
+    .title { font-size: 20px; }
+    .content { padding: 24px 20px; }
+    .step-question { font-size: 18px; }
+    .scheda { font-size: 11px; padding: 18px 14px; }
+    .scheda .field-label { min-width: 90px; }
+    .actions { flex-direction: column-reverse; }
+    .btn { width: 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="archai-app">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-row">
+      <div class="logo">
+        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16 4 L4 28 L11 28 L13 23 L19 23 L21 28 L28 28 Z M14.5 19 L16 14.5 L17.5 19 Z" fill="#0A1628" stroke="#0A1628" stroke-linejoin="round" stroke-width="0.5"/>
+        </svg>
+      </div>
+      <div class="titles">
+        <div class="title">Arch<span class="ai-badge">AI</span></div>
+        <div class="subtitle">Consulente di automazioni condominiali</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROGRESS BAR -->
+  <div class="progress" id="progress">
+    <div class="progress-step"></div>
+    <div class="progress-step"></div>
+    <div class="progress-step"></div>
+    <div class="progress-step"></div>
+    <div class="progress-step"></div>
+    <div class="progress-step"></div>
+  </div>
+
+  <!-- CONTENT (dynamic) -->
+  <div class="content" id="content"></div>
+</div>
+
+<script>
+// ============================================
+// STATO DEL WIZARD
+// ============================================
+const state = {
+  step: 0,
+  wfName: '',
+  d1: null, d2: null, d3: null, d4: null
+};
+
+const TOTAL_STEPS = 6; // Nome + D1 + D2 + D3 + D4 + Risultato
+
+// ============================================
+// MAPPATURE METODO ARCHAI
+// ============================================
+const ARCHETIPI = {
+  1: { num: 1, nome: 'Reporter ricorrente', strumento: 'Cowork Scheduled Task' },
+  2: { num: 2, nome: 'Trasformatore di file', strumento: 'Cowork Scheduled Task (cartella sorvegliata)' },
+  3: { num: 3, nome: 'Risponditore di richieste', strumento: 'Cowork + Gmail connector' },
+  4: { num: 4, nome: 'App custom', strumento: 'React + Supabase + Netlify (Parte 2)' }
+};
+
+const PROSSIMI_PASSI = {
+  1: [
+    'Crea la cartella /Studio/[NomeWF]/ sul PC dello studio',
+    'Esporta i dati dal gestionale e mettili dentro',
+    'Apri Cowork → New Task → scrivi il prompt operativo',
+    'Digita /schedule → frequenza desiderata → Save'
+  ],
+  2: [
+    'Crea la cartella sorvegliata /Studio/[NomeWF]/in/',
+    'Apri Cowork → New Task → istruisci Claude su cosa fare quando arriva un file',
+    'Digita /schedule → controllo orario o giornaliero → Save',
+    'Testa lasciando un file di esempio nella cartella'
+  ],
+  3: [
+    'Verifica che il connettore Gmail sia attivo in Claude',
+    'Apri Cowork → New Task → istruisci Claude su come riconoscere e classificare le richieste',
+    'Digita /schedule → controllo email ogni ora → Save',
+    'Limite L1: per qualità da agente vero h24, ti aspetto in Parte 2'
+  ],
+  4: [
+    'Questo workflow richiede una webapp custom',
+    'Stack: React + Supabase + Netlify, costruito con Claude Code',
+    'È esattamente il programma della Parte 2 della Masterclass AI LABS Builder',
+    'Workaround L1 parziale: vedi sotto'
+  ]
+};
+
+// ============================================
+// RENDER ENGINE
+// ============================================
+function render() {
+  updateProgress();
+  const content = document.getElementById('content');
+
+  if (state.step === 0) renderIntro(content);
+  else if (state.step === 1) renderD1(content);
+  else if (state.step === 2) renderD2(content);
+  else if (state.step === 3) renderD3(content);
+  else if (state.step === 4) renderD4(content);
+  else if (state.step === 5) renderResult(content);
+  else if (state.step === 'stop_d1') renderStopD1(content);
+  else if (state.step === 'stop_d4') renderStopD4(content);
+}
+
+function updateProgress() {
+  const steps = document.querySelectorAll('.progress-step');
+  let activeIdx;
+  if (typeof state.step === 'string') activeIdx = -1;
+  else activeIdx = state.step;
+
+  steps.forEach((el, i) => {
+    el.classList.remove('active', 'done');
+    if (i < activeIdx) el.classList.add('done');
+    else if (i === activeIdx) el.classList.add('active');
+  });
+}
+
+// ============================================
+// STEP 0 — INTRO + NOME WF
+// ============================================
+function renderIntro(el) {
+  el.innerHTML = `
+    <div class="step-label">PASSO 1 DI 6 — IL TUO WORKFLOW</div>
+    <div class="step-question">Dai un nome al workflow che vuoi automatizzare</div>
+    <div class="step-hint">Sii concreto. Es. "Solleciti morosi", "Scadenze sicurezza", "Verbale assemblea".</div>
+
+    <div class="principio-zero">
+      <strong>Principio Zero</strong>
+      <p>"Il gestionale è chiuso. Tu esporti i dati. Claude lavora sull'export."</p>
+    </div>
+
+    <input type="text" class="text-input" id="wfNameInput" placeholder="Nome del workflow..." maxlength="80" value="${escapeHtml(state.wfName)}">
+
+    <div class="actions">
+      <div></div>
+      <button class="btn" id="startBtn" disabled>Inizia analisi →</button>
+    </div>
+  `;
+  const input = document.getElementById('wfNameInput');
+  const btn = document.getElementById('startBtn');
+  input.focus();
+  input.addEventListener('input', () => {
+    state.wfName = input.value.trim();
+    btn.disabled = state.wfName.length < 3;
+  });
+  input.addEventListener('keypress', e => {
+    if (e.key === 'Enter' && !btn.disabled) btn.click();
+  });
+  btn.addEventListener('click', () => { state.step = 1; render(); });
+  if (state.wfName.length >= 3) btn.disabled = false;
+}
+
+// ============================================
+// D1 — Da dove arrivano i dati
+// ============================================
+function renderD1(el) {
+  el.innerHTML = `
+    <div class="step-label">PASSO 2 DI 6 — DOMANDA 1</div>
+    <div class="step-question">Da dove arrivano i dati che Claude deve elaborare?</div>
+    <div class="step-hint">Workflow: <strong>${escapeHtml(state.wfName)}</strong></div>
+    <div class="options">
+      ${optionHtml('a', 'Da un file che esporto io dal gestionale (Excel, CSV, PDF)')}
+      ${optionHtml('b', 'Da mail, WhatsApp o un form')}
+      ${optionHtml('c', 'Da una cartella che si popola da sola (es. Drive condiviso)')}
+      ${optionHtml('d', 'Solo dalla mia testa o da un\u2019agenda cartacea')}
+    </div>
+    ${backBtn(0)}
+  `;
+  bindOptions((choice) => {
+    state.d1 = choice;
+    if (choice === 'd') { state.step = 'stop_d1'; }
+    else { state.step = 2; }
+    render();
+  });
+}
+
+// ============================================
+// D2 — Dove finisce il risultato
+// ============================================
+function renderD2(el) {
+  el.innerHTML = `
+    <div class="step-label">PASSO 3 DI 6 — DOMANDA 2</div>
+    <div class="step-question">Dove deve finire il risultato?</div>
+    <div class="step-hint">Workflow: <strong>${escapeHtml(state.wfName)}</strong></div>
+    <div class="options">
+      ${optionHtml('a', 'Un file (Word, Excel, PDF) in una cartella')}
+      ${optionHtml('b', 'Una mail o un messaggio in uscita')}
+      ${optionHtml('c', 'Una notifica per me o un collaboratore')}
+      ${optionHtml('d', 'Dentro un altro software')}
+    </div>
+    ${backBtn(1)}
+  `;
+  bindOptions((choice) => { state.d2 = choice; state.step = 3; render(); });
+}
+
+// ============================================
+// D3 — Quando deve partire (definisce l'archetipo)
+// ============================================
+function renderD3(el) {
+  el.innerHTML = `
+    <div class="step-label">PASSO 4 DI 6 — DOMANDA 3</div>
+    <div class="step-question">Quando deve partire l'automazione?</div>
+    <div class="step-hint">Questa risposta determina l'archetipo del tuo workflow.</div>
+    <div class="options">
+      ${optionHtml('a', 'A orari fissi (es. ogni lunedì alle 9)')}
+      ${optionHtml('b', 'Quando arriva un file in una cartella')}
+      ${optionHtml('c', 'Quando arriva una mail o una richiesta')}
+      ${optionHtml('d', 'Su mia richiesta da un\u2019interfaccia web')}
+    </div>
+    ${backBtn(2)}
+  `;
+  bindOptions((choice) => { state.d3 = choice; state.step = 4; render(); });
+}
+
+// ============================================
+// D4 — PC h24
+// ============================================
+function renderD4(el) {
+  el.innerHTML = `
+    <div class="step-label">PASSO 5 DI 6 — DOMANDA 4</div>
+    <div class="step-question">Il PC del tuo studio resta acceso h24 con Claude Desktop sempre aperto?</div>
+    <div class="step-hint">È una condizione necessaria perché Cowork possa eseguire automazioni schedulate.</div>
+    <div class="options">
+      ${optionHtml('a', 'Sì, ho un PC fisso sempre acceso in studio')}
+      ${optionHtml('b', 'No, uso un laptop che porto in giro')}
+    </div>
+    ${backBtn(3)}
+  `;
+  bindOptions((choice) => {
+    state.d4 = choice;
+    if (choice === 'b') { state.step = 'stop_d4'; }
+    else { state.step = 5; }
+    render();
+  });
+}
+
+// ============================================
+// STOP — D1 = d (workflow non digitalizzato)
+// ============================================
+function renderStopD1(el) {
+  el.innerHTML = `
+    <div class="step-label">METODO ARCHAI · STOP</div>
+    <div class="step-question">Prima va digitalizzato</div>
+    <div class="alert danger">
+      <h3>Il tuo workflow non è ancora pronto per il Metodo</h3>
+      <p>Se i dati esistono solo nella tua testa o su carta, l'automazione non può partire. Prima devi portare i dati in un formato digitale (file, mail, cartella). Poi torna qui.</p>
+    </div>
+    <div class="actions">
+      <button class="btn btn-secondary" onclick="restart()">↺ Ricomincia</button>
+    </div>
+  `;
+}
+
+// ============================================
+// STOP — D4 = b (no PC h24)
+// ============================================
+function renderStopD4(el) {
+  el.innerHTML = `
+    <div class="step-label">METODO ARCHAI · STOP</div>
+    <div class="step-question">Manca il "motore studio"</div>
+    <div class="alert warning">
+      <h3>Cowork ha bisogno di un PC sempre acceso</h3>
+      <p>Le automazioni schedulate di Cowork girano solo se il computer è sveglio e l'app Claude Desktop è aperta. Devi prima organizzare un "motore studio" — un PC fisso sempre acceso — poi torna qui.</p>
+    </div>
+    <div class="actions">
+      <button class="btn btn-secondary" onclick="restart()">↺ Ricomincia</button>
+    </div>
+  `;
+}
+
+// ============================================
+// SCHEDA FINALE
+// ============================================
+function renderResult(el) {
+  // Determina archetipo da D3
+  const archMap = { a: 1, b: 2, c: 3, d: 4 };
+  const archNum = archMap[state.d3];
+  const arch = ARCHETIPI[archNum];
+
+  // Determina livello
+  let livello, livelloClass, livelloLabel;
+  if (archNum <= 2) {
+    livello = 'L1'; livelloClass = 'level-l1'; livelloLabel = '✓ Livello 1';
+  } else if (archNum === 3) {
+    livello = 'L1 parziale'; livelloClass = 'level-l1p'; livelloLabel = '⚠ Livello 1 parziale';
+  } else {
+    livello = 'L2'; livelloClass = 'level-l2'; livelloLabel = '✗ Livello 2';
+  }
+
+  // Mappature per testo umano
+  const inputMap = {
+    a: 'File esportato dal gestionale',
+    b: 'Mail / WhatsApp / form',
+    c: 'Cartella che si popola da sola'
+  };
+  const outputMap = {
+    a: 'File in cartella',
+    b: 'Mail o messaggio in uscita',
+    c: 'Notifica a un umano',
+    d: 'Dentro un altro software (workaround o L2)'
+  };
+  const triggerMap = {
+    a: 'Cron a orari fissi',
+    b: 'Presenza file in cartella sorvegliata',
+    c: 'Arrivo mail o richiesta',
+    d: 'Uso interattivo da interfaccia'
+  };
+
+  const passi = PROSSIMI_PASSI[archNum];
+
+  el.innerHTML = `
+    <div class="step-label">PASSO 6 DI 6 — VERDETTO</div>
+    <div class="step-question">Ecco la tua scheda</div>
+    <div class="step-hint">Salvala o copiala. È il tuo piano d'azione.</div>
+
+    <div class="scheda" id="schedaContent">
+<div class="header-line">═══════════════════════════════════════</div>
+<div class="title-line">SCHEDA WORKFLOW · METODO ARCHAI</div>
+<div class="header-line">═══════════════════════════════════════</div>
+<div class="field-line"><span class="field-label">Nome WF:</span>${escapeHtml(state.wfName)}</div>
+<div class="field-line"><span class="field-label">Archetipo:</span>${arch.num} — ${arch.nome}</div>
+<div class="field-line"><span class="field-label">Livello:</span><span class="${livelloClass}">${livelloLabel}</span></div>
+<div class="field-line"><span class="field-label">Trigger:</span>${triggerMap[state.d3]}</div>
+<div class="field-line"><span class="field-label">Input:</span>${inputMap[state.d1] || '—'}</div>
+<div class="field-line"><span class="field-label">Output:</span>${outputMap[state.d2]}</div>
+<div class="field-line"><span class="field-label">Strumento:</span>${arch.strumento}</div>
+<div class="header-line">───────────────────────────────────────</div>
+<div class="next-steps-title">PROSSIMI PASSI:</div>
+${passi.map(p => `<div class="step-item">→ ${escapeHtml(p)}</div>`).join('')}
+<div class="header-line">═══════════════════════════════════════</div>
+<div class="footer-line">— ArchAI · Amministratore Crescente</div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-secondary" onclick="restart()">↺ Nuovo workflow</button>
+      <div style="display:flex;align-items:center;">
+        <button class="btn" id="copyBtn">📋 Copia scheda</button>
+        <span class="copy-feedback" id="copyFeedback">Copiato!</span>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('copyBtn').addEventListener('click', copyScheda);
+}
+
+// ============================================
+// HELPERS
+// ============================================
+function optionHtml(letter, text) {
+  return `
+    <button class="option" data-choice="${letter}">
+      <div class="option-letter">${letter.toUpperCase()}</div>
+      <div class="option-text">${text}</div>
+    </button>
+  `;
+}
+
+function bindOptions(callback) {
+  document.querySelectorAll('.option').forEach(el => {
+    el.addEventListener('click', () => callback(el.dataset.choice));
+  });
+}
+
+function backBtn(prevStep) {
+  return `
+    <div class="actions">
+      <button class="btn btn-secondary" onclick="goBack(${prevStep})">← Indietro</button>
+      <div></div>
+    </div>
+  `;
+}
+
+function goBack(step) { state.step = step; render(); }
+
+function restart() {
+  state.step = 0;
+  state.wfName = '';
+  state.d1 = state.d2 = state.d3 = state.d4 = null;
+  render();
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+}
+
+function copyScheda() {
+  // Genera versione testuale pulita per appunti
+  const archMap = { a: 1, b: 2, c: 3, d: 4 };
+  const archNum = archMap[state.d3];
+  const arch = ARCHETIPI[archNum];
+  let livelloLabel;
+  if (archNum <= 2) livelloLabel = 'L1';
+  else if (archNum === 3) livelloLabel = 'L1 parziale';
+  else livelloLabel = 'L2';
+
+  const inputMap = { a: 'File esportato dal gestionale', b: 'Mail / WhatsApp / form', c: 'Cartella che si popola da sola' };
+  const outputMap = { a: 'File in cartella', b: 'Mail o messaggio in uscita', c: 'Notifica a un umano', d: 'Dentro un altro software' };
+  const triggerMap = { a: 'Cron a orari fissi', b: 'Presenza file in cartella', c: 'Arrivo mail o richiesta', d: 'Uso interattivo' };
+
+  const passi = PROSSIMI_PASSI[archNum];
+
+  const text =
+`═══════════════════════════════════════
+  SCHEDA WORKFLOW · METODO ARCHAI
+═══════════════════════════════════════
+  Nome WF:    ${state.wfName}
+  Archetipo:  ${arch.num} — ${arch.nome}
+  Livello:    ${livelloLabel}
+  Trigger:    ${triggerMap[state.d3]}
+  Input:      ${inputMap[state.d1] || '—'}
+  Output:     ${outputMap[state.d2]}
+  Strumento:  ${arch.strumento}
+───────────────────────────────────────
+  PROSSIMI PASSI:
+${passi.map(p => '  → ' + p).join('\n')}
+═══════════════════════════════════════
+  — ArchAI · Amministratore Crescente`;
+
+  navigator.clipboard.writeText(text).then(() => {
+    const fb = document.getElementById('copyFeedback');
+    fb.classList.add('show');
+    setTimeout(() => fb.classList.remove('show'), 2000);
+  }).catch(() => {
+    // Fallback per ambienti senza clipboard API
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch(e) {}
+    document.body.removeChild(ta);
+    const fb = document.getElementById('copyFeedback');
+    fb.classList.add('show');
+    setTimeout(() => fb.classList.remove('show'), 2000);
+  });
+}
+
+// ============================================
+// AVVIO
+// ============================================
+render();
+</script>
+</body>
+</html>
