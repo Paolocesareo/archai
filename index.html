@@ -533,9 +533,9 @@ ${outputDesc}
 
 COMPITO PASSO PASSO
 1. Apri la cartella ${cartellaIn} e leggi tutti i file presenti.
-2. Estrai le informazioni rilevanti per l'obiettivo sopra.
-3. Componi un report chiaro, ordinato per priorità o per data.
-4. Salva il report come file Markdown nella cartella ${cartellaOut} con nome "Report_${wfClean}_[data].md".
+2. Estrai solo le informazioni richieste dall'OBIETTIVO qui sopra.
+3. Componi l'output esattamente nel formato e con il dettaglio indicato nell'OBIETTIVO — NON aggiungere sezioni non richieste, NON cambiare lo schema.
+4. Se l'OBIETTIVO non specifica dove salvare, usa ${cartellaOut} con nome "Report_${wfClean}_[data].md".
 5. Avvisami con un riepilogo di 3-5 righe: cosa hai trovato, cosa è urgente, cosa richiede la mia attenzione.
 
 REGOLE OPERATIVE
@@ -560,10 +560,10 @@ ${outputDesc}
 
 COMPITO PASSO PASSO
 1. Controlla la cartella ${cartellaIn}.
-2. Per ogni file nuovo (non ancora elaborato), apri il file e leggi il contenuto.
-3. Estrai i dati rilevanti, normalizzali, classificali.
-4. Salva il risultato lavorato nella cartella ${cartellaOut} mantenendo una nomenclatura coerente: "[tipo]_[data]_[riferimento].[ext]".
-5. Sposta il file originale già elaborato in ${cartellaIn}processati/ per evitare doppioni.
+2. Per ogni file nuovo (non ancora elaborato), leggi il contenuto.
+3. Applica esattamente la trasformazione descritta nell'OBIETTIVO qui sopra — NON inventare schemi di nomenclatura o cartelle di destinazione diverse da quelle indicate.
+4. Se l'OBIETTIVO non specifica dove salvare il risultato, usa ${cartellaOut}.
+5. Se l'OBIETTIVO non specifica dove spostare i file già lavorati, usa ${cartellaIn}processati/.
 6. Avvisami con un riepilogo: quanti file hai elaborato, quali criticità hai trovato, eventuali file rimasti da rivedere manualmente.
 
 REGOLE OPERATIVE
@@ -588,9 +588,9 @@ ${outputDesc}
 
 COMPITO PASSO PASSO
 1. Apri Gmail tramite il connettore.
-2. Cerca le mail non lette o nuove che riguardano la richiesta gestita da questo workflow.
-3. Per ognuna, classifica il tipo di richiesta e raccogli i dati necessari per rispondere.
-4. Prepara una bozza di risposta professionale e cordiale (NON inviare automaticamente, salva come bozza).
+2. Cerca le mail nuove/non lette che riguardano "${wfName}".
+3. Per ogni mail trovata, applica esattamente la logica di classificazione e risposta descritta nell'OBIETTIVO qui sopra — NON aggiungere criteri non richiesti.
+4. Prepara le bozze in Gmail come specificato nell'OBIETTIVO. NON inviare mai automaticamente, sempre e solo bozze salvate in Drafts.
 5. Avvisami con un elenco: quante mail hai trovato, di che tipo, quante bozze hai preparato, quali richiedono la mia attenzione perché ambigue o delicate.
 
 REGOLE OPERATIVE
