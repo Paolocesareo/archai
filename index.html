@@ -178,6 +178,181 @@
     opacity: 0; transition: opacity 0.2s;
   }
   .copy-feedback.show { opacity: 1; }
+
+  /* === FIX 1: transizione visibile tra step === */
+  @keyframes stepIn {
+    0%   { opacity: 0; transform: translateX(24px); }
+    100% { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes stepNumPop {
+    0%   { transform: scale(0.6); opacity: 0; }
+    60%  { transform: scale(1.08); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .content.step-enter { animation: stepIn 0.35s ease-out; }
+  .step-header {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 20px; padding-bottom: 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .step-badge {
+    display: flex; align-items: center; justify-content: center;
+    width: 56px; height: 56px; border-radius: 14px;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+    color: var(--navy-dark); font-weight: 800; font-size: 18px;
+    letter-spacing: -0.5px; flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(212, 169, 70, 0.35);
+    animation: stepNumPop 0.5s ease-out;
+  }
+  .step-badge .step-num-big { font-size: 22px; line-height: 1; }
+  .step-badge .step-num-small { font-size: 11px; line-height: 1; opacity: 0.75; }
+  .step-header-text { flex: 1; min-width: 0; }
+  .step-header-label {
+    font-size: 11px; font-weight: 800; color: var(--gold-dark);
+    letter-spacing: 1.6px; text-transform: uppercase; margin-bottom: 3px;
+  }
+  .step-header-title {
+    font-size: 20px; font-weight: 700; color: var(--navy-dark);
+    line-height: 1.25;
+  }
+  .step-hint { font-size: 14px; color: var(--text-muted); margin-bottom: 22px; }
+
+  /* progress più visibile */
+  .progress-step { height: 6px; }
+  .progress-step.active {
+    background: var(--gold);
+    box-shadow: 0 0 8px rgba(212, 169, 70, 0.6);
+  }
+
+  /* === FIX 2: scheda infografica === */
+  .scheda-info {
+    background: linear-gradient(135deg, #0a1628 0%, #142848 60%, #1e3a5f 100%);
+    border: 2px solid var(--gold);
+    border-radius: 14px; padding: 26px 22px;
+    margin-bottom: 16px; color: var(--cream);
+    box-shadow: 0 8px 24px rgba(10, 22, 40, 0.2);
+  }
+  .scheda-info-title {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 16px; font-weight: 700; color: var(--gold-light);
+    margin-bottom: 4px; letter-spacing: 0.3px;
+  }
+  .scheda-info-title .wf-name {
+    color: var(--white); font-weight: 800;
+  }
+  .scheda-info-sub {
+    font-size: 12px; color: rgba(247, 245, 239, 0.6);
+    letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 20px;
+  }
+  .flow-diagram {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr;
+    gap: 10px; align-items: stretch;
+    margin-bottom: 22px;
+  }
+  .flow-node {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1.5px solid rgba(212, 169, 70, 0.35);
+    border-radius: 10px; padding: 16px 12px;
+    text-align: center; display: flex; flex-direction: column;
+    align-items: center; justify-content: flex-start; gap: 8px;
+    min-height: 140px;
+  }
+  .flow-node.flow-process {
+    background: rgba(212, 169, 70, 0.12);
+    border-color: var(--gold);
+  }
+  .flow-icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    background: rgba(212, 169, 70, 0.15);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .flow-process .flow-icon {
+    background: var(--gold); color: var(--navy-dark);
+  }
+  .flow-icon svg { width: 24px; height: 24px; }
+  .flow-label {
+    font-size: 10px; font-weight: 800; letter-spacing: 1.2px;
+    text-transform: uppercase; color: var(--gold-light);
+  }
+  .flow-process .flow-label { color: var(--gold); }
+  .flow-desc {
+    font-size: 13px; color: var(--cream); font-weight: 600;
+    line-height: 1.35;
+  }
+  .flow-meta {
+    font-size: 11px; color: rgba(247, 245, 239, 0.7);
+    font-style: italic; margin-top: 2px;
+  }
+  .flow-arrow {
+    display: flex; align-items: center; justify-content: center;
+    color: var(--gold); font-size: 22px; font-weight: 700;
+    padding: 0 4px;
+  }
+  .scheda-badges {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 12px; border-radius: 20px;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.3px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: var(--cream);
+  }
+  .badge.badge-l1 { background: rgba(109, 217, 137, 0.15); border-color: #6dd989; color: #a8e9bc; }
+  .badge.badge-l1p { background: rgba(244, 201, 90, 0.15); border-color: #f4c95a; color: #f6d685; }
+  .badge.badge-l2 { background: rgba(255, 138, 101, 0.15); border-color: #ff8a65; color: #ffb199; }
+  .badge.badge-tool { background: rgba(212, 169, 70, 0.18); border-color: var(--gold); color: var(--gold-light); }
+  .folder-paths {
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 8px; padding: 12px 14px;
+    font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+    font-size: 11px; color: var(--gold-light); line-height: 1.7;
+    border-left: 3px solid var(--gold);
+  }
+  .folder-paths .folder-label {
+    color: rgba(247, 245, 239, 0.5); font-size: 9px;
+    text-transform: uppercase; letter-spacing: 1px;
+    display: block; margin-bottom: 2px;
+  }
+  .folder-paths .folder-path { color: var(--cream); }
+
+  .next-steps-box {
+    background: #f9f7f0; border-left: 4px solid var(--gold);
+    border-radius: 8px; padding: 16px 18px; margin-bottom: 16px;
+  }
+  .next-steps-box h4 {
+    font-size: 12px; color: var(--gold-dark); font-weight: 800;
+    letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 10px;
+  }
+  .next-steps-box ol {
+    list-style: none; counter-reset: step;
+  }
+  .next-steps-box ol li {
+    counter-increment: step; padding: 6px 0 6px 32px;
+    position: relative; font-size: 13px; color: var(--text);
+    line-height: 1.45;
+  }
+  .next-steps-box ol li::before {
+    content: counter(step);
+    position: absolute; left: 0; top: 6px;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--gold); color: var(--navy-dark);
+    font-weight: 800; font-size: 11px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  @media (max-width: 700px) {
+    .flow-diagram {
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+    .flow-arrow { transform: rotate(90deg); padding: 2px 0; }
+    .flow-node { min-height: auto; padding: 14px 10px; }
+  }
   @media (max-width: 600px) {
     body { padding: 12px 8px; }
     .header { padding: 20px; }
@@ -392,6 +567,10 @@ ${freq}.`;
 function render() {
   updateProgress();
   const content = document.getElementById('content');
+  // Fix 1: trigger animazione slide-in a ogni render
+  content.classList.remove('step-enter');
+  void content.offsetWidth; // force reflow
+  content.classList.add('step-enter');
   if (state.step === 0) renderIntro(content);
   else if (state.step === 1) renderD1(content);
   else if (state.step === 2) renderD2(content);
@@ -591,10 +770,10 @@ function renderResult(el) {
   const archNum = archMap[state.d3];
   const arch = ARCHETIPI[archNum];
 
-  let livelloLabel, livelloClass;
-  if (archNum <= 2) { livelloLabel = '✓ Livello 1'; livelloClass = 'level-l1'; }
-  else if (archNum === 3) { livelloLabel = '⚠ Livello 1 parziale'; livelloClass = 'level-l1p'; }
-  else { livelloLabel = '✗ Livello 2'; livelloClass = 'level-l2'; }
+  let livelloLabel, livelloClass, badgeClass;
+  if (archNum <= 2) { livelloLabel = '✓ Livello 1'; livelloClass = 'level-l1'; badgeClass = 'badge-l1'; }
+  else if (archNum === 3) { livelloLabel = '⚠ Livello 1 parziale'; livelloClass = 'level-l1p'; badgeClass = 'badge-l1p'; }
+  else { livelloLabel = '✗ Livello 2 — Parte 2'; livelloClass = 'level-l2'; badgeClass = 'badge-l2'; }
 
   const inputMap = {
     a: 'File esportato dal gestionale',
@@ -614,36 +793,95 @@ function renderResult(el) {
     d: 'Uso interattivo da interfaccia'
   };
 
+  // Icone SVG inline
+  const ICONS = {
+    inputA: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
+    inputB: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>',
+    inputC: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>',
+    arch1: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>',
+    arch2: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 8 3 12 7"/><line x1="8" y1="3" x2="8" y2="15"/><polyline points="20 17 16 21 12 17"/><line x1="16" y1="9" x2="16" y2="21"/></svg>',
+    arch3: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/><polyline points="15 19 17 21 21 17"/></svg>',
+    arch4: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/><polyline points="7 9 10 12 7 15"/><line x1="13" y1="15" x2="17" y2="15"/></svg>',
+    outputA: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>',
+    outputB: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>',
+    outputC: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>',
+    outputD: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><circle cx="7" cy="6" r="0.6" fill="currentColor"/><circle cx="10" cy="6" r="0.6" fill="currentColor"/></svg>'
+  };
+
+  const inputIconKey = 'input' + (state.d1 || 'a').toUpperCase();
+  const archIconKey = 'arch' + archNum;
+  const outputIconKey = 'output' + (state.d2 || 'a').toUpperCase();
+
   const passi = PROSSIMI_PASSI[archNum];
   const promptTesto = generaPrompt(archNum, state.wfName, state.frequenza, state.outputDesc, state.d1, state.d2);
+  const wfClean = state.wfName.replace(/\s+/g, '_');
 
   el.innerHTML = `
-    <div class="step-label">PASSO 8 DI 8 — VERDETTO</div>
-    <div class="step-question">Ecco la tua scheda e il prompt pronto</div>
-    <div class="step-hint">Copia il prompt, apri Cowork, incollalo in un nuovo task. Da lì si comincia.</div>
+    <div class="step-label">PASSO 8 DI 8 · VERDETTO</div>
+    <div class="step-question">Ecco la tua scheda infografica</div>
+    <div class="step-hint">Il flusso è analizzato, l'archetipo è identificato, il prompt è pronto. Da qui si parte.</div>
 
-    <div class="scheda" id="schedaContent">
-<div class="header-line">═══════════════════════════════════════</div>
-<div class="title-line">SCHEDA WORKFLOW · METODO ARCHAI</div>
-<div class="header-line">═══════════════════════════════════════</div>
-<div class="field-line"><span class="field-label">Nome WF:</span>${escapeHtml(state.wfName)}</div>
-<div class="field-line"><span class="field-label">Archetipo:</span>${arch.num} — ${arch.nome}</div>
-<div class="field-line"><span class="field-label">Livello:</span><span class="${livelloClass}">${livelloLabel}</span></div>
-<div class="field-line"><span class="field-label">Trigger:</span>${triggerMap[state.d3]}</div>
-<div class="field-line"><span class="field-label">Frequenza:</span>${escapeHtml(state.frequenza)}</div>
-<div class="field-line"><span class="field-label">Input:</span>${inputMap[state.d1] || '—'}</div>
-<div class="field-line"><span class="field-label">Output:</span>${outputMap[state.d2]}</div>
-<div class="field-line"><span class="field-label">Strumento:</span>${arch.strumento}</div>
-<div class="header-line">───────────────────────────────────────</div>
-<div class="next-steps-title">PROSSIMI PASSI:</div>
-${passi.map(p => `<div class="step-item">→ ${escapeHtml(p)}</div>`).join('')}
-<div class="header-line">═══════════════════════════════════════</div>
-<div class="footer-line">— ArchAI · Amministratore Crescente</div>
+    <div class="scheda-info">
+      <div class="scheda-info-title">📋 <span class="wf-name">${escapeHtml(state.wfName)}</span></div>
+      <div class="scheda-info-sub">Scheda Workflow · Metodo ArchAI</div>
+
+      <div class="flow-diagram">
+        <div class="flow-node flow-input">
+          <div class="flow-icon">${ICONS[inputIconKey] || ICONS.inputA}</div>
+          <div class="flow-label">Input</div>
+          <div class="flow-desc">${inputMap[state.d1] || '—'}</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node flow-process">
+          <div class="flow-icon">${ICONS[archIconKey]}</div>
+          <div class="flow-label">Archetipo ${arch.num}</div>
+          <div class="flow-desc">${arch.nome}</div>
+          <div class="flow-meta">${triggerMap[state.d3]}</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node flow-output">
+          <div class="flow-icon">${ICONS[outputIconKey] || ICONS.outputA}</div>
+          <div class="flow-label">Output</div>
+          <div class="flow-desc">${outputMap[state.d2]}</div>
+        </div>
+      </div>
+
+      <div class="scheda-badges">
+        <div class="badge ${badgeClass}">${livelloLabel}</div>
+        <div class="badge badge-tool">⚙️ ${arch.strumento}</div>
+        <div class="badge">🕐 ${escapeHtml(state.frequenza)}</div>
+      </div>
+
+      ${archNum <= 2 ? `
+      <div class="folder-paths">
+        <span class="folder-label">Cartella ingresso</span>
+        <span class="folder-path">/Studio/${wfClean}/in/</span><br>
+        <span class="folder-label" style="margin-top:6px;">Cartella risultato</span>
+        <span class="folder-path">/Studio/${wfClean}/out/</span>
+      </div>
+      ` : archNum === 3 ? `
+      <div class="folder-paths">
+        <span class="folder-label">Connettore dati</span>
+        <span class="folder-path">Gmail API · bozze in "Drafts"</span>
+      </div>
+      ` : `
+      <div class="folder-paths">
+        <span class="folder-label">Stack definitivo (Parte 2)</span>
+        <span class="folder-path">React + Supabase + Netlify + Claude Code</span>
+      </div>
+      `}
+    </div>
+
+    <div class="next-steps-box">
+      <h4>→ Prossimi passi</h4>
+      <ol>
+        ${passi.map(p => `<li>${escapeHtml(p)}</li>`).join('')}
+      </ol>
     </div>
 
     <div class="actions" style="margin-top:8px;">
       <button class="btn btn-secondary btn-small" onclick="restart()">↺ Nuovo workflow</button>
-      <button class="btn btn-small" id="copySchedaBtn">📋 Copia scheda</button>
+      <button class="btn btn-small" id="copySchedaBtn">📋 Copia scheda (testo)</button>
     </div>
 
     <div class="prompt-section">
