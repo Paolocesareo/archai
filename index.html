@@ -345,6 +345,56 @@
     display: flex; align-items: center; justify-content: center;
   }
 
+  /* === FIX 3: esempi cliccabili per il passo 7 === */
+  .esempi-box {
+    margin-top: 18px;
+    background: linear-gradient(135deg, #fffdf6 0%, #fdf8e8 100%);
+    border: 1.5px dashed var(--gold);
+    border-radius: 10px;
+    padding: 18px 18px 14px;
+  }
+  .esempi-title {
+    font-size: 13px; font-weight: 800; color: var(--gold-dark);
+    letter-spacing: 0.3px; margin-bottom: 12px;
+  }
+  .esempi-list {
+    display: flex; flex-direction: column; gap: 8px;
+    margin-bottom: 10px;
+  }
+  .esempio-item {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 8px; padding: 12px 14px;
+    text-align: left; cursor: pointer;
+    font-family: inherit; width: 100%;
+    transition: all 0.15s;
+    display: block;
+  }
+  .esempio-item:hover {
+    border-color: var(--gold);
+    background: #fffdf6;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(212, 169, 70, 0.12);
+  }
+  .esempio-item.selected {
+    border-color: var(--gold);
+    background: #fdf8e8;
+    box-shadow: 0 0 0 3px rgba(212, 169, 70, 0.2);
+  }
+  .esempio-label {
+    font-size: 13px; font-weight: 700; color: var(--navy-dark);
+    margin-bottom: 4px;
+  }
+  .esempio-preview {
+    font-size: 12px; color: var(--text-muted);
+    line-height: 1.45;
+  }
+  .esempi-tip {
+    font-size: 11px; color: var(--text-muted);
+    font-style: italic; text-align: center;
+    padding-top: 6px; border-top: 1px solid rgba(212, 169, 70, 0.2);
+  }
+
   @media (max-width: 700px) {
     .flow-diagram {
       grid-template-columns: 1fr;
@@ -716,11 +766,94 @@ function renderFreq(el) {
 }
 
 function renderOutput(el) {
+  // Archetipo già determinato da D3
+  const archMap = { a: 1, b: 2, c: 3, d: 4 };
+  const archNum = archMap[state.d3];
+
+  // Esempi pertinenti per ogni archetipo — scritti con il dettaglio che serve
+  // al prompt generato (numeri, soglie, formati, nomi di file). Lo studente
+  // può cliccarne uno e usarlo come base, o riscriverlo a modo suo.
+  const ESEMPI = {
+    1: [ // Reporter ricorrente
+      {
+        label: 'Report scadenze 60 giorni',
+        testo: 'Un report Markdown con tutte le scadenze in arrivo nei prossimi 60 giorni (CPI, antincendio, assicurazioni), ordinate per data crescente, con condominio, tipo scadenza, giorni residui e una colonna "urgenza" (rossa sotto 15gg, gialla 15-30gg, verde oltre).'
+      },
+      {
+        label: 'Lista morosi sopra soglia',
+        testo: 'Un foglio Excel con tutti i condòmini che hanno un saldo aperto superiore a 200€, ordinati per importo decrescente, con colonne: condominio, unità, nome, saldo, giorni di ritardo, ultimo sollecito inviato.'
+      },
+      {
+        label: 'Riepilogo settimanale assemblee',
+        testo: 'Un report Markdown con tutte le assemblee previste nei prossimi 7 giorni: data, ora, condominio, ordine del giorno principale, numero di condòmini attesi e stato convocazioni.'
+      }
+    ],
+    2: [ // Trasformatore di file
+      {
+        label: 'Rinomina fatture PDF',
+        testo: 'Rinominare ogni fattura PDF secondo lo schema AAAA-MM-GG_nomecondominio_importo.pdf (es. 2026-04-15_ViaRoma12_450.00.pdf) leggendo data, condominio e importo dal contenuto del PDF. Spostare il file rinominato nella cartella definitiva, lasciare eventuali scarti in /da_rivedere/.'
+      },
+      {
+        label: 'Estrai dati da verbali',
+        testo: 'Per ogni verbale di assemblea .docx nella cartella, estrarre in un file .md riassuntivo: data assemblea, condominio, partecipanti, punti all\'ordine del giorno, decisioni prese, scadenze assegnate. Nome file: verbale_[condominio]_[data].md.'
+      },
+      {
+        label: 'Normalizza estratti conto',
+        testo: 'Leggere gli estratti conto Excel/CSV nella cartella e produrre un unico file normalizzato con colonne standard: data, descrizione, importo, categoria (incasso/uscita/spese), condominio di riferimento. Salvare come estratti_unificati_[data].xlsx.'
+      }
+    ],
+    3: [ // Risponditore di richieste
+      {
+        label: 'Triage mail condòmini',
+        testo: 'Classificare ogni mail nuova dei condòmini in 4 categorie (richiesta informazioni / segnalazione guasto / contestazione / amministrativa) e preparare una bozza di risposta professionale in Gmail per ognuna, senza inviare. Per i guasti, chiedere sempre foto e indirizzo esatto.'
+      },
+      {
+        label: 'Bozze sollecito pagamento',
+        testo: 'Per ogni mail che contiene richieste di chiarimenti su quote non pagate, preparare in Gmail una bozza di risposta cortese che riporti il saldo aggiornato, la data dell\'ultimo sollecito e le modalità di pagamento disponibili. Non inviare mai, lasciare in Drafts.'
+      },
+      {
+        label: 'Risposta richieste documenti',
+        testo: 'Quando un condòmino chiede via mail un documento (verbale, bilancio, regolamento), preparare una bozza di risposta in Gmail che indichi dove trovare il documento nell\'area riservata, e segnalarmi le richieste ambigue con [DA RIVEDERE] in cima.'
+      }
+    ],
+    4: [ // App custom
+      {
+        label: 'Dashboard pratiche giornaliera',
+        testo: 'Una dashboard web interattiva che mostra in tempo reale lo stato delle pratiche del giorno: nuovi ticket, in lavorazione, completati. Filtrabile per condominio e per tipo, con link diretto alle pratiche Notion. Aggiornamento ogni ora.'
+      },
+      {
+        label: 'Portale condòmini scadenze',
+        testo: 'Una webapp con login dove ogni condòmino vede solo le proprie scadenze (rata condominiale, quote straordinarie, solleciti) con colori per urgenza e possibilità di segnare come "pagato" con ricevuta allegata.'
+      },
+      {
+        label: 'CRM pipeline nuovi contatti',
+        testo: 'Un CRM custom per gestire la pipeline di acquisizione nuovi condomini: fasi (contatto → preventivo → assemblea → firmato), scheda contatto, note, reminder automatici, vista kanban.'
+      }
+    ]
+  };
+
+  const esempi = ESEMPI[archNum] || ESEMPI[1];
+
   el.innerHTML = `
     <div class="step-label">PASSO 7 DI 8 — DESCRIZIONE OUTPUT</div>
     <div class="step-question">Cosa deve produrre esattamente l'automazione?</div>
-    <div class="step-hint">Descrivilo in 1-2 righe, come lo spiegheresti a un collaboratore. Es. "Una mail di sollecito ai condòmini con saldo sopra 200€" oppure "Un report Excel con tutte le scadenze in arrivo nei prossimi 60 giorni".</div>
-    <textarea class="text-area" id="outputDescInput" placeholder="Descrivi l'output desiderato..." maxlength="300">${escapeHtml(state.outputDesc)}</textarea>
+    <div class="step-hint">Più sei preciso qui, più il prompt operativo sarà potente. Indica <strong>cosa</strong> produrre, <strong>con che dettaglio</strong>, <strong>in che formato</strong>. Se non sai da dove partire, clicca uno degli esempi qui sotto e modificalo.</div>
+
+    <textarea class="text-area" id="outputDescInput" placeholder="Descrivi l'output desiderato..." maxlength="600">${escapeHtml(state.outputDesc)}</textarea>
+
+    <div class="esempi-box">
+      <div class="esempi-title">💡 Esempi pronti per il tuo archetipo — clicca per usarli come base</div>
+      <div class="esempi-list">
+        ${esempi.map((e, i) => `
+          <button class="esempio-item" data-idx="${i}">
+            <div class="esempio-label">${escapeHtml(e.label)}</div>
+            <div class="esempio-preview">${escapeHtml(e.testo.substring(0, 90))}${e.testo.length > 90 ? '…' : ''}</div>
+          </button>
+        `).join('')}
+      </div>
+      <div class="esempi-tip">↑ Un esempio vale più di una spiegazione: sotto c'è il dettaglio che serve a Claude per produrre un output utilizzabile al primo colpo.</div>
+    </div>
+
     <div class="actions">
       <button class="btn btn-secondary" onclick="goBack(5)">← Indietro</button>
       <button class="btn" id="genBtn" disabled>Genera scheda e prompt →</button>
@@ -732,6 +865,19 @@ function renderOutput(el) {
   textarea.addEventListener('input', () => {
     state.outputDesc = textarea.value.trim();
     btn.disabled = state.outputDesc.length < 10;
+  });
+  // Click su un esempio: precompila la textarea
+  document.querySelectorAll('.esempio-item').forEach(el => {
+    el.addEventListener('click', () => {
+      const idx = parseInt(el.dataset.idx, 10);
+      textarea.value = esempi[idx].testo;
+      state.outputDesc = esempi[idx].testo;
+      btn.disabled = false;
+      textarea.focus();
+      // micro feedback visivo
+      document.querySelectorAll('.esempio-item').forEach(e => e.classList.remove('selected'));
+      el.classList.add('selected');
+    });
   });
   btn.addEventListener('click', () => { state.step = 7; render(); });
   if (state.outputDesc.length >= 10) btn.disabled = false;
